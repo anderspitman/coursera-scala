@@ -193,20 +193,11 @@ object Huffman {
   def decode(tree: CodeTree, bits: List[Bit]): List[Char] = decodeIter(tree, tree, bits)
   
   def decodeIter(tree: CodeTree, subtree: CodeTree, bits: List[Bit]): List[Char] = subtree match {
-    case Leaf(c: Char, w: Int) => {
-      if (bits.isEmpty) c :: Nil
-      else c :: decode(tree, bits)
-    }
+    case Leaf(c: Char, w: Int) => if (bits.isEmpty) c :: Nil else c :: decode(tree, bits)
     case Fork(left: CodeTree, right: CodeTree, c: List[Char], w: Int) => 
-      if (bits.isEmpty) {
-        List('e')
-      }
-      else if (bits.head == 0) {
-        decodeIter(tree, left, bits.tail)
-      }
-      else {
-        decodeIter(tree, right, bits.tail)
-      }
+      if (bits.isEmpty) List()
+      else if (bits.head == 0) decodeIter(tree, left, bits.tail)
+      else decodeIter(tree, right, bits.tail)
   }
 
   /**
